@@ -1,4 +1,6 @@
 #include <time.h>
+#include <stdio.h>
+
 #define tick_length 10
 #define attribute_length 100
 
@@ -50,5 +52,8 @@ typedef struct Data_Passer {
 	XLabel xlabel;
 	YTick ytick;
 	XTick xtick;
+	FILE *chart;
 } Data_Passer;
 
+
+Data_Passer *initialize();
