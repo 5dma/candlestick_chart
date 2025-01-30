@@ -11,7 +11,7 @@ typedef struct Activity {
 	float high;
 	float low;
 	float close;
-	time_t date;
+	time_t *date;
 } Activity;
 
 typedef struct Candlestick {
@@ -63,3 +63,5 @@ typedef struct Data_Passer {
 
 
 Data_Passer *initialize();
+void read_activity_list(Data_Passer *data_passer);
+void printit(gpointer data, gpointer user_data);

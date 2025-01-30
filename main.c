@@ -12,8 +12,8 @@ int main(int argc, char *argv[]) {
 	Data_Passer *data_passer = initialize();
 	data_passer->database_path = g_strdup(argv[1]);
 
-
-	data_passer->activity_list = read_activity_list(data_passer);
+	read_activity_list(data_passer);
+	g_slist_foreach (data_passer->activity_list, printit, NULL);
 
 	data_passer->chart = fopen("/tmp/chart.svg", "w");
 	fprintf(data_passer->chart, "<svg version=\"1.1\" width=\"1400\" height=\"468\" xmlns=\"http://www.w3.org/2000/svg\">");

@@ -20,13 +20,16 @@ time_t *get_time(int julian) {
 	tm.tm_year = year - 1900;
 	tm.tm_mon = month - 1;
 	tm.tm_mday = day;
+	tm.tm_hour = 0;
+	tm.tm_min = 0;
+	tm.tm_sec = 0;
 
 	time_t *localtime = g_malloc(sizeof(time_t));
 	*localtime = mktime(&tm);
 	return localtime;
 }
 
-GSList *read_activity_list(Data_Passer *data_passer) {
+void read_activity_list(Data_Passer *data_passer) {
 	if (access(data_passer->database_path, F_OK) != 0) {
 		g_print("The database %s does not exist. Try again.\n", data_passer->database_path);
 		exit(1);
@@ -39,7 +42,7 @@ GSList *read_activity_list(Data_Passer *data_passer) {
 	}
 
 	sqlite3_stmt *stmt;
-	rc = sqlite3_prepare_v2(data_passer->database_handle, "SELECT trade_date, open, high, low, close FROM history WHERE run_date=? AND symbol_id=? AND api_id=? ORDER BY trade_date;", -1, &stmt, NULL);
+	rc = sqlite3_prepare_v2(data_passer->database_handle, "SELECT trade_date, open, high, low, close FROM history WHERE run_date=? AND symbol_id=? AND api_id=? ORDER BY trade_date ASC;", -1, &stmt, NULL);
 	if (rc != SQLITE_OK) {
 		printf("Error executing sql statement\n");
 		sqlite3_close(data_passer->database_handle);
@@ -50,22 +53,17 @@ GSList *read_activity_list(Data_Passer *data_passer) {
 	sqlite3_bind_int(stmt, 2, 1);
 	sqlite3_bind_int(stmt, 3, 2);
 
-
 	while (sqlite3_step(stmt) != SQLITE_DONE) {
-		for (int col = 0; col <= 4; col++) {
-			if (col == 0) {
-				int julian = sqlite3_column_int(stmt, col);
-				get_time(julian);
-				printf("%d", julian);
-			} else {
-				printf("  %5.2f", sqlite3_column_double(stmt, col));
-			}
-		}
-		printf("\n");
+		Activity *activity = g_malloc(sizeof(Activity));
+		int julian = sqlite3_column_int(stmt, 0);
+		activity->date = get_time(julian);
+		activity->open = sqlite3_column_double(stmt, 1);
+		activity->high = sqlite3_column_double(stmt, 2);
+		activity->low = sqlite3_column_double(stmt, 3);
+		activity->close = sqlite3_column_double(stmt, 4);
+		data_passer->activity_list = g_slist_append (data_passer->activity_list, activity);
 	}
 
 	sqlite3_finalize(stmt);
-
 	sqlite3_close(data_passer->database_handle);
-	return NULL;
 }
