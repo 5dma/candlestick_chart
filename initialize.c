@@ -24,5 +24,7 @@ Data_Passer *initialize() {
 	g_stpcpy(data_passer->ytick.fill, "#000000");
 
 	data_passer->chart = NULL;
+	data_passer->database_path = NULL;
+	data_passer->activity_list = NULL;
 	return data_passer;
 }

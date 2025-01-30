@@ -1,5 +1,7 @@
 #include <time.h>
 #include <stdio.h>
+#include <glib-2.0/glib.h>
+#include <sqlite3.h>
 
 #define tick_length 10
 #define attribute_length 100
@@ -53,6 +55,10 @@ typedef struct Data_Passer {
 	YTick ytick;
 	XTick xtick;
 	FILE *chart;
+	GSList *activity_list;
+	gchar *database_path;
+	sqlite3 *database_handle;
+
 } Data_Passer;
 
 

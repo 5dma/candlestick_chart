@@ -14,7 +14,7 @@ OBJEXT      := o
 INSTALLDIR  := /usr/local/bin/
 #Flags, Libraries and Includes
 CFLAGS      := -g -Wall `pkg-config --cflags glib-2.0` -I/usr/include/
-LFLAGS      := `pkg-config --libs glib-2.0`
+LFLAGS      := `pkg-config --libs glib-2.0` `pkg-config --libs sqlite3`
 INC          := -I$(INCDIR)
 
 #---------------------------------------------------------------------------------
